@@ -95,7 +95,7 @@
             unlisten()
             location.href = '/'
           } else
-            // log("key: ", ev.keyCode)
+            // log("key: ", code)
             ;
         }
 
@@ -111,11 +111,13 @@
 
         /* check paste target for new stuff, loss of focus */
         function check() {
-          if (input.value != src) {
+          var value = input.value
+          if (value != src) {
+            log("current: ", value, "original: ", src)
             unlisten()
             input.style.display = 'none'
-            if (!receive(input.value)) {
-              log('bzzt: ' + input.value)
+            if (!receive(value)) {
+              log('bzzt: ' + value)
               activateInput()
             }
             return
@@ -149,7 +151,7 @@
         /* preview pasted image */
         var previewImg = document.createElement("img"),
                     ok = document.createElement("a")
-        ok.innerText = "SHIP IT"
+        ok.textContent = "SHIP IT"
         function preview(url) {
           log("preview: " + url)
 
@@ -159,7 +161,7 @@
           previewImg.setAttribute('src', url)
           form.appendChild(previewImg)
 
-          img.style.opacity = 0.4
+          img.style.opacity = 0.3
           form.style.opacity = 0.9
           listen(function (code) {
             /* escape out of preview */
@@ -169,11 +171,11 @@
         }
 
         function dismiss() {
+          activateInput()
           img.style.opacity = 1.0
           form.style.opacity = 0.0
           form.removeChild(previewImg)
           form.removeChild(ok)
-          activateInput()
         }
 
         log('paste me an img')
