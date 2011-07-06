@@ -1,13 +1,14 @@
 class Vastimg
-  def initialize
-    @history = ['http://thechive.files.wordpress.com/2010/11/oprah-bees.gif']
+  def initialize(redis=$redis)
+    @redis = redis
+    add 'http://thechive.files.wordpress.com/2010/11/oprah-bees.gif'
   end
 
   def call(env)
     url = scrub(env['QUERY_STRING'])
     case url
     when /^(https?|data):/
-      @history << url if !@history.include?(url)
+      add url
       if env['HTTP_USER_AGENT'] =~ /Propane/
         [302, {'Location' => url}, []]
       else
@@ -15,15 +16,22 @@ class Vastimg
           200,
           {
             'Content-Type'  => 'text/html',
-            'Cache-Control' => 'public, max-age=0'
+            'Cache-Control' => 'public, max-age=30'
           },
           File.open('index.html', 'rb')
         ]
       end
     else
-      @history << @history.shift
-      [302, {'Location' => "/?#{@history.first}"}, []]
+      [302, {'Location' => "/?#{random}"}, []]
     end
+  end
+
+  def add(url)
+    @redis.sadd('master', url)
+  end
+
+  def random
+    @redis.srandmember('master')
   end
 
   def scrub(str)
