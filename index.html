@@ -1,15 +1,43 @@
+<!DOCTYPE html>
 <html>
   <head>
     <title>vastimg.heroku.com</title>
     <style>
-      body {margin:0;padding:0;background:#000}
-      img {border:0;position:absolute;top:0;left:0;height:100%;width:100%;
+      body {
+        margin:0;
+        padding:0;
+        background:#000
+      }
+      img {
+        position:absolute;
+        top:0;
+        left:0;
+        height:100%;
+        width:100%;
+        border:0;
+        /* secret to everything basically */
         image-rendering:-moz-crisp-edges;
         image-rendering:-webkit-optimize-contrast;
         -ms-interpolation-mode:nearest-neighbor
       }
-      p a {font-size:120px;font-family:helvetica;font-weight:bold;letter-spacing:-5;text-decoration:none;position:absolute;right:50;bottom:20;color:#000;opacity:0.4}
-      p a:hover { opacity:0.6 }
+      p {
+        position:absolute;
+        right:30px;
+        bottom:0px;
+      }
+      p a {
+        font-size:70px;
+        font-family:helvetica;
+        font-weight:bold;
+        color:#000;
+        letter-spacing:-5;
+        text-decoration:none;
+
+        opacity:0.2;
+      }
+      p a:hover {
+        opacity:0.5
+      }
     </style>
   </head>
   <body>
