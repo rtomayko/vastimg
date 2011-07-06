@@ -75,14 +75,15 @@
             input.select()
             input.focus()
           }
-          input.select()
           setTimeout(check, 100)
         }
         check()
 
         function receive(text) {
-          var url = text.trim()
+          var url = text.trim(), match
           if (url.match(/^(?:https?|data):/)) {
+            if (match = url.match(/^https?:\/\/vastimg\.herokuapp\.com\/\?(.*)/))
+              url = match[1]
             location.href = '/?' + url
             return url
           }
