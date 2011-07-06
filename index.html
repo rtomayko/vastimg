@@ -18,8 +18,7 @@
             img = document.getElementsByTagName('img')[0]
       img.src = src
       document.onkeydown = function (ev) {
-        if (ev.keyCode == 32 || ev.keyCode == 13 ||
-           (ev.keyCode >= 37 && ev.keyCode <= 40)) {
+        if (ev.keyCode == 32 || (ev.keyCode >= 37 && ev.keyCode <= 40)) {
           document.onkeydown = null
           window.location.href = '/'
         }
