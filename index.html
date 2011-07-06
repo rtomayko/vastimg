@@ -53,32 +53,61 @@
               log = function(){console && console.log.apply(console, arguments)}
 
         img.src = src
-        document.onkeydown = function (ev) {
-          if (ev.keyCode == 32 || (ev.keyCode >= 37 && ev.keyCode <= 40)) {
-            document.onkeydown = null
+        form.onsubmit = function () { return false }
+
+        /* listen/unlisten for top-level keyboard events */
+        function listen (func) {
+          func = func || key
+          document.onkeydown =
+            function (ev) { return func(ev.keyCode) }
+        }
+        function unlisten () { document.onkeydown = null }
+
+        /* process keyCode value */
+        function key (code) {
+          if (code == 32 || (code >= 37 && code <= 40)) {
+            unlisten()
             location.href = '/'
           } else
             // log("key: ", ev.keyCode)
             ;
         }
 
-        input.value = src
-        input.select()
-        input.focus()
+        /* activate paste target input */
+        function activateInput() {
+          input.value = src
+          input.style.display = 'block'
+          listen()
+          check()
+          log("input activated")
+        }
+        activateInput()
+
+        /* check paste target for new stuff, loss of focus */
         function check() {
           if (input.value != src) {
+            unlisten()
             input.style.display = 'none'
-            if (receive(input.value))
-              return
-            log('bzzt: ' + input.value)
-            input.value = src
-            input.style.display = ''
-            input.select()
-            input.focus()
+            if (!receive(input.value)) {
+              log('bzzt: ' + input.value)
+              activateInput()
+            }
+            return
           }
+
+          if (document.activeElement != input) {
+            log('paste target lost focus')
+            input.focus()
+            input.select()
+          }
+
+          if (input.selectionStart > 0 || input.selectionEnd < src.length) {
+            log("paste target lost selection")
+            input.select()
+          }
+
           setTimeout(check, 100)
         }
-        check()
 
         function receive(text) {
           var url = text.trim(), match
