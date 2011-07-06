@@ -20,40 +20,77 @@
         image-rendering:-webkit-optimize-contrast;
         -ms-interpolation-mode:nearest-neighbor
       }
-      p {
+      form {
+        padding:30px;
+        border:8px solid #000;
+        background:#fff;
         position:absolute;
-        right:30px;
-        bottom:0px;
+        width:25%;
+        height:25%;
+        top:33%;
+        left:33%;
+        opacity:0;
       }
-      p a {
-        font-size:70px;
-        font-family:helvetica;
-        font-weight:bold;
-        color:#000;
-        letter-spacing:-5;
-        text-decoration:none;
-
-        opacity:0.2;
-      }
-      p a:hover {
-        opacity:0.5
+      input {
+        font-size:40px;
+        opacity:1;
+        width:90%;
+        color:#fff;
+        border:0;
       }
     </style>
   </head>
   <body>
     <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">
-    <p><a href='http://twitter.com/rtomayko/status/88461571612876800'>API</a></p>
+    <form><input type='text'></form>
     <script type="text/javascript">
-      var query = document.location.search,
-            src = query.substring(1, query.length),
-            img = document.getElementsByTagName('img')[0]
-      img.src = src
-      document.onkeydown = function (ev) {
-        if (ev.keyCode == 32 || (ev.keyCode >= 37 && ev.keyCode <= 40)) {
-          document.onkeydown = null
-          window.location.href = '/'
+      (function () {
+        var query = document.location.search,
+              src = query.substring(1, query.length),
+              img = document.getElementsByTagName('img')[0],
+             form = document.getElementsByTagName('form')[0],
+            input = document.getElementsByTagName('input')[0],
+              log = console ? console.log.bind(console) : function () {}
+        img.src = src
+        document.onkeydown = function (ev) {
+          if (ev.keyCode == 32 || (ev.keyCode >= 37 && ev.keyCode <= 40)) {
+            document.onkeydown = null
+            location.href = '/'
+          } else {
+            console.log(ev.keyCode)
+          }
         }
-      }
+
+        input.value = src
+        input.select()
+        input.focus()
+        function check() {
+          if (input.value != src) {
+            input.style.display = 'none'
+            if (receive(input.value))
+              return
+            log('bzzt: ' + input.value)
+            input.value = src
+            input.style.display = ''
+            input.select()
+            input.focus()
+          }
+          input.select()
+          setTimeout(check, 100)
+        }
+        check()
+
+        var preview = document.createElement("img")
+        function receive(text) {
+          var url = text.trim()
+          if (url.match(/^(?:https?|data):/)) {
+            location.href = '/?' + url
+            return url
+          }
+        }
+
+        log('paste me an img')
+      })()
     </script>
   </body>
 </html>
