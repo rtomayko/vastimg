@@ -1,0 +1,18 @@
+<html>
+  <head>
+    <title>vastimg.heroku.com</title>
+    <style>
+      body {margin:0;padding:0;background:#000}
+      img {border:0;position:absolute;top:0;left:0;height:100%;width:100%}
+    </style>
+  </head>
+  <body>
+    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">
+    <script type="text/javascript">
+      var query = document.location.search,
+            src = query.substring(1, query.length),
+            img = document.getElementsByTagName('img')[0]
+      img.src = src
+    </script>
+  </body>
+</html>
