@@ -50,7 +50,8 @@
               img = document.getElementsByTagName('img')[0],
              form = document.getElementsByTagName('form')[0],
             input = document.getElementsByTagName('input')[0],
-              log = console ? console.log.bind(console) : function () {}
+              log = function(){console && console.log.apply(console, arguments)}
+
         img.src = src
         document.onkeydown = function (ev) {
           if (ev.keyCode == 32 || (ev.keyCode >= 37 && ev.keyCode <= 40)) {
