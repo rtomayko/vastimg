@@ -1,7 +1,11 @@
 history = ['http://thechive.files.wordpress.com/2010/11/oprah-bees.gif']
 
+def scrub(str)
+  str.to_s.strip.gsub(/[\r\n\t\0]/, '').gsub('%0D', '')
+end
+
 run lambda { |env|
-  url = env['QUERY_STRING'].to_s.strip
+  url = scrub(env['QUERY_STRING'])
   case url
   when /^(https?|data):/
     history << url if !history.include?(url)
