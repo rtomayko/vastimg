@@ -56,9 +56,9 @@
           if (ev.keyCode == 32 || (ev.keyCode >= 37 && ev.keyCode <= 40)) {
             document.onkeydown = null
             location.href = '/'
-          } else {
-            console.log(ev.keyCode)
-          }
+          } else
+            // log("key: ", ev.keyCode)
+            ;
         }
 
         input.value = src
