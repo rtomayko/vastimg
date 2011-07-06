@@ -16,21 +16,25 @@
         height:100%;
         width:100%;
         border:0;
+        -webkit-transition-property:opacity;
+        -webkit-transition-duration:0.200s;
         /* secret to everything basically */
         image-rendering:-moz-crisp-edges;
         image-rendering:-webkit-optimize-contrast;
         -ms-interpolation-mode:nearest-neighbor
       }
       form {
-        padding:30px;
+        padding:0px;
         border:20px solid #111;
         border-radius:.5em;
         position:absolute;
         width:50%;
         height:50%;
-        top:22%;
-        left:22%;
+        top:20%;
+        left:20%;
         opacity:0;
+        -webkit-transition-property:opacity;
+        -webkit-transition-duration:0.200s;
       }
       form a {
         font-size:225%;
@@ -57,9 +61,8 @@
         background:#000;
 
         position:absolute;
-        right:4%;
+        right:3%;
         bottom:4%;
-        z-index:1;
       }
       form a:hover {
         opacity:0.95;
@@ -153,19 +156,23 @@
                     ok = document.createElement("a")
         ok.textContent = "SHIP IT"
         function preview(url) {
+          var href = "/?" + url
           log("preview: " + url)
-
-          ok.setAttribute('href', "/?" + url)
-          form.appendChild(ok)
 
           previewImg.setAttribute('src', url)
           form.appendChild(previewImg)
 
+          ok.setAttribute('href', href)
+          form.appendChild(ok)
+
           img.style.opacity = 0.3
           form.style.opacity = 0.9
+
           listen(function (code) {
             /* escape out of preview */
-            if (code == 27)
+            if (code == 32 || code == 13)
+              document.location = href;
+            else if (code == 27)
               dismiss()
           }, 200)
         }
@@ -174,8 +181,10 @@
           activateInput()
           img.style.opacity = 1.0
           form.style.opacity = 0.0
-          form.removeChild(previewImg)
-          form.removeChild(ok)
+          setTimeout(function () {
+            form.removeChild(previewImg)
+            form.removeChild(ok)
+          }, 200)
         }
 
         log('paste me an img')
