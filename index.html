@@ -17,6 +17,10 @@
             src = query.substring(1, query.length),
             img = document.getElementsByTagName('img')[0]
       img.src = src
+      document.onkeydown = function () {
+        document.onkeydown = null
+        window.location.href = '/'
+      }
     </script>
   </body>
 </html>
