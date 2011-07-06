@@ -3,7 +3,11 @@
     <title>vastimg.heroku.com</title>
     <style>
       body {margin:0;padding:0;background:#000}
-      img {border:0;position:absolute;top:0;left:0;height:100%;width:100%}
+      img {border:0;position:absolute;top:0;left:0;height:100%;width:100%;
+        image-rendering:-moz-crisp-edges;
+        image-rendering:-webkit-optimize-contrast;
+        -ms-interpolation-mode:nearest-neighbor
+      }
     </style>
   </head>
   <body>
