@@ -6,7 +6,8 @@
       body {
         margin:0;
         padding:0;
-        background:#000
+        background:#000;
+        font-family:helvetica;
       }
       img {
         position:absolute;
@@ -22,21 +23,46 @@
       }
       form {
         padding:30px;
-        border:8px solid #000;
-        background:#fff;
+        border:20px solid #111;
+        border-radius:.5em;
         position:absolute;
-        width:25%;
-        height:25%;
-        top:33%;
-        left:33%;
+        width:50%;
+        height:50%;
+        top:22%;
+        left:22%;
         opacity:0;
       }
-      input {
-        font-size:40px;
-        opacity:1;
-        width:90%;
+      form a {
+        font-size:225%;
+        font-weight:bold;
         color:#fff;
-        border:0;
+
+        display: inline-block;
+        outline: none;
+        cursor: pointer;
+
+        text-align: center;
+        text-decoration: none;
+        text-shadow: 0 1px 1px rgba(0,0,0,.3);
+
+        opacity:0.5;
+        -webkit-transition-property:opacity;
+        -webkit-transition-duration:0.2s;
+
+        border-radius: .4em;
+        box-shadow: 0 1px 2px rgba(0,0,0,.2);
+        padding:10px 20px;
+
+        border:2px solid #000;
+        background:#000;
+
+        position:absolute;
+        right:4%;
+        bottom:4%;
+        z-index:1;
+      }
+      form a:hover {
+        opacity:0.9;
       }
     </style>
   </head>
@@ -109,14 +135,45 @@
           setTimeout(check, 100)
         }
 
+        /* detect URLs in input */
         function receive(text) {
           var url = text.trim(), match
           if (url.match(/^(?:https?|data):/)) {
             if (match = url.match(/^https?:\/\/vastimg\.herokuapp\.com\/\?(.*)/))
               url = match[1]
-            location.href = '/?' + url
+            preview(url)
             return url
           }
+        }
+
+        /* preview pasted image */
+        var previewImg = document.createElement("img"),
+                    ok = document.createElement("a")
+        ok.innerText = "SHIP IT"
+        function preview(url) {
+          log("preview: " + url)
+
+          ok.setAttribute('href', "/?" + url)
+          form.appendChild(ok)
+
+          previewImg.setAttribute('src', url)
+          form.appendChild(previewImg)
+
+          img.style.opacity = 0.4
+          form.style.opacity = 0.9
+          listen(function (code) {
+            /* escape out of preview */
+            if (code == 27)
+              dismiss()
+          }, 200)
+        }
+
+        function dismiss() {
+          img.style.opacity = 1.0
+          form.style.opacity = 0.0
+          form.removeChild(previewImg)
+          form.removeChild(ok)
+          activateInput()
         }
 
         log('paste me an img')
