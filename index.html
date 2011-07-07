@@ -7,7 +7,12 @@
         margin:0;
         padding:0;
         background:#000;
+        position:absolute;
+        height:100%;
+        width:100%;
+        border:0;
         font-family:helvetica;
+        overflow:clip;
       }
       img {
         position:absolute;
@@ -67,11 +72,74 @@
       form a:hover {
         opacity:0.95;
       }
+
+      div {
+        position:relative;
+        height:520px;
+        width:900px;
+        top:50%;
+        margin:-300px auto 0;
+        background:#000;
+
+        opacity:0;
+        -webkit-transition-property:opacity;
+        -webkit-transition-duration:0.150s;
+
+        color:#fff;
+        font-size:2em;
+        text-shadow:1px 1px 1px rgba(0,0,0,.3);
+
+        padding:30px 80px;
+        border-radius:.4em;
+        box-shadow:0 1px 2px rgba(0,0,0,.2);
+      }
+      h1 {
+        text-align:center;
+        text-shadow: 3px 3px 3px rgba(0,0,0,.3);
+        color:#fff;
+        margin:12px 0;
+      }
+      ul {
+        margin:0;
+        padding:0;
+        list-style-type:none;
+      }
+      li {
+        margin:35px 0;
+      }
+      tt {
+        display:inline-block;
+        background:#fff;
+        color:#000;
+        padding:5px 10px;
+        margin-right:10px;
+        border-radius:4px;
+        font-weight:bold;
+        letter-spacing:2px;
+      }
+      hr {
+        margin:35px 0;
+        height:0;
+      }
     </style>
   </head>
   <body>
     <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">
     <form><input type='text'></form>
+    <div>
+      <h1>What's going on?</h1>
+      <ul>
+        <li><tt>Space</tt> Go to a new random image right now</li>
+        <li><tt>Command+C</tt> Copy this image's URL to your pasteboard</li>
+        <li><tt>Command+V</tt> Paste an image from your pasteboard</li>
+        <li><tt>?</tt> You're looking at it</li>
+      </ul>
+      <hr>
+      <p>
+        <strong>WARNING</strong>
+        Images you post will be seen by other people.
+      </p>
+    </div>
     <script type="text/javascript">
       (function () {
         var query = document.location.search,
@@ -79,6 +147,7 @@
               img = document.getElementsByTagName('img')[0],
              form = document.getElementsByTagName('form')[0],
             input = document.getElementsByTagName('input')[0],
+             help = document.getElementsByTagName('div')[0],
               log = function(){console && console.log.apply(console, arguments)}
 
         img.src = src
@@ -94,9 +163,15 @@
 
         /* process keyCode value */
         function key (code) {
-          if (code == 32 || (code >= 37 && code <= 40)) {
+          if (code === 32 || (code >= 37 && code <= 40)) {
             unlisten()
             location.href = '/'
+          } else if (code === 191 || code === 27) { // ?
+            if (help.style.opacity > 0.0)
+              help.style.opacity = 0.0
+            else
+              help.style.opacity = 0.8
+            return false
           } else
             // log("key: ", code)
             ;
@@ -158,6 +233,9 @@
         function preview(url) {
           var href = "/?" + url
           log("preview: " + url)
+
+          if (help.style.opacity > 0.0)
+            help.style.opacity = 0.0
 
           previewImg.setAttribute('src', url)
           form.appendChild(previewImg)
