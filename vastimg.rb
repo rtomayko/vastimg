@@ -6,6 +6,15 @@ class Vastimg
 
   def call(env)
     url = scrub(env['QUERY_STRING'])
+    method = env['REQUEST_METHOD'].downcase
+    if %[get delete].include?(method)
+      send(method, url, env)
+    else
+      [405, {}, []]
+    end
+  end
+
+  def get(url, env)
     case url
     when /^(https?|data):/
       add url
@@ -26,12 +35,34 @@ class Vastimg
     end
   end
 
+  def delete(url, env)
+    if admin?(env)
+      @redis.srem('master', url)
+      [200, {}, []]
+    else
+      [403, {}, []]
+    end
+  end
+
   def add(url)
     @redis.sadd('master', url)
   end
 
   def random
     @redis.srandmember('master')
+  end
+
+  def admin?(env)
+    cookies(env)['token'] == ENV['VASTIMG_ADMIN_TOKEN']
+  end
+
+  def cookies(env)
+    hash = {}
+    env['HTTP_COOKIE'].to_s.split(/; */).each do |cookie|
+      key, value = cookie.split('=', 2)
+      hash[key] = value
+    end
+    hash
   end
 
   def scrub(str)

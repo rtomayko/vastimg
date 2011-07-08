@@ -193,6 +193,9 @@
             else
               help.css('opacity', 0.8)
             return false
+          } else if (code === 8) {
+            bad()
+            return false
           } else
             // log("key: ", code)
             ;
@@ -279,6 +282,22 @@
           img.css('opacity', 1.0)
           form.css('opacity', 0.0)
           setTimeout(function () { form.find("img", "a").remove() }, 200)
+        }
+
+        /* mark the current image as bad */
+        function bad () {
+          $.ajax({
+            type: 'DELETE',
+            url:  '/?' + src,
+            dataType: 'text',
+            success: function (data, status, req) {
+              log('image delete request ok')
+              location.href = '/'
+            },
+            error: function (req, status, boom) {
+              log('DELETE failed', req, status)
+            }
+          })
         }
 
         log('paste me an img')
