@@ -141,6 +141,7 @@
         text-decoration:none;
       }
     </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js" type="application/javascript"></script>
   </head>
   <body>
     <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">
@@ -161,17 +162,17 @@
     </div>
     <p><a href="http://twitter.com/rtomayko">Love, @rtomayko</a></p>
     <script type="text/javascript">
-      (function () {
+      (function($) {
         var query = document.location.search,
               src = query.substring(1, query.length),
-              img = document.getElementsByTagName('img')[0],
-             form = document.getElementsByTagName('form')[0],
-            input = document.getElementsByTagName('input')[0],
-             help = document.getElementsByTagName('div')[0],
+              img = $('img'),
+             form = $('form'),
+            input = $('input'),
+             help = $('div'),
               log = function(){console && console.log.apply(console, arguments)}
 
-        img.src = src
-        form.onsubmit = function () { return false }
+        img.attr('src', src)
+        form.submit(function () { log('canceling submit'); return false })
 
         /* listen/unlisten for top-level keyboard events */
         function listen (func) {
@@ -187,10 +188,10 @@
             unlisten()
             location.href = '/'
           } else if (code === 191 || code === 27) { // ?
-            if (help.style.opacity > 0.0)
-              help.style.opacity = 0.0
+            if (help.css('opacity') > 0.0)
+              help.css('opacity', 0.0)
             else
-              help.style.opacity = 0.8
+              help.css('opacity', 0.8)
             return false
           } else
             // log("key: ", code)
@@ -199,8 +200,8 @@
 
         /* activate paste target input */
         function activateInput() {
-          input.value = src
-          input.style.display = 'block'
+          input.attr('value', src)
+          input.show()
           listen()
           check()
           log("input activated")
@@ -209,11 +210,10 @@
 
         /* check paste target for new stuff, loss of focus */
         function check() {
-          var value = input.value
+          var value = input.val()
           if (value != src) {
-            log("current: ", value, "original: ", src)
             unlisten()
-            input.style.display = 'none'
+            input.hide()
             if (!receive(value)) {
               log('bzzt: ' + value)
               activateInput()
@@ -221,13 +221,13 @@
             return
           }
 
-          if (document.activeElement != input) {
+          if (document.activeElement != input[0]) {
             log('paste target lost focus')
             input.focus()
             input.select()
           }
 
-          if (input.selectionStart > 0 || input.selectionEnd < src.length) {
+          if (input[0].selectionStart > 0 || input[0].selectionEnd < src.length) {
             log("paste target lost selection")
             input.select()
           }
@@ -247,27 +247,26 @@
         }
 
         /* preview pasted image */
-        var previewImg = document.createElement("img"),
-                    ok = document.createElement("a")
-        ok.textContent = "SHIP IT"
+        var previewImg = $(document.createElement("img")),
+                    ok = $(document.createElement("a"))
+        ok.text("SHIP IT")
         function preview(url) {
           var href = "/?" + url
           log("preview: " + url)
 
-          if (help.style.opacity > 0.0)
-            help.style.opacity = 0.0
+          if (help.css('opacity') > 0.0)
+            help.css('opacity', 0.0)
 
-          previewImg.setAttribute('src', url)
-          form.appendChild(previewImg)
+          previewImg.attr('src', url)
+          form.append(previewImg)
 
-          ok.setAttribute('href', href)
-          form.appendChild(ok)
+          ok.attr('href', href)
+          form.append(ok)
 
-          img.style.opacity = 0.3
-          form.style.opacity = 0.9
+          img.css('opacity', 0.3)
+          form.css('opacity', 0.9)
 
           listen(function (code) {
-            /* escape out of preview */
             if (code == 32 || code == 13)
               document.location = href;
             else if (code == 27)
@@ -277,16 +276,13 @@
 
         function dismiss() {
           activateInput()
-          img.style.opacity = 1.0
-          form.style.opacity = 0.0
-          setTimeout(function () {
-            form.removeChild(previewImg)
-            form.removeChild(ok)
-          }, 200)
+          img.css('opacity', 1.0)
+          form.css('opacity', 0.0)
+          setTimeout(function () { form.find("img", "a").remove() }, 200)
         }
 
         log('paste me an img')
-      })()
+      })(jQuery)
     </script>
   </body>
 </html>
