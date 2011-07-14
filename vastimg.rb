@@ -18,7 +18,7 @@ class Vastimg
     case url
     when /^(https?|data):/
       add url
-      if env['HTTP_USER_AGENT'] =~ /(Propane|Echofon)/
+      if env['HTTP_USER_AGENT'] =~ /Propane/
         [302, {'Location' => url}, []]
       else
         [
